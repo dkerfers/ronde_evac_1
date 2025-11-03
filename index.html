@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Texte QR</title>
+</head>
+<body>
+  <h2>📋 Enregistrement du QR code</h2>
+  <p id="status">Traitement en cours...</p>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzjJeCGzcd05qeFdpauCsh6kmmTcK_djBBbwiUFrH6pq54YaTGOsplOKOM1mH1UIelm/exec"; // <-- ton lien Apps Script
+
+    // Récupération du point QR code (dans l'URL)
+    const params = new URLSearchParams(window.location.search);
+    const texte = params.get("t");
+
+    if (!texte) {
+      document.getElementById("status").textContent = "⚠️ Aucune position à enregistrer.";
+    } else {
+      const data = { texte: texte };
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.getElementById("status").textContent =
+          `✅ Texte "${texte}" enregistré à ${new Date().toLocaleString()}`;
+      })
+      .catch((error) => {
+        document.getElementById("status").textContent = "❌ Erreur : " + error;
+      });
+    }
+  </script>
+</body>
+</html>
